@@ -37,7 +37,7 @@ ACTIVE_USER=$(who)
 SVC=("named" "httpd" "postfix" "dovecot" "smb" "sshd" "mariadb" "firewalld") \
 SVC_STATUS="\n--------------------------------------------------------------\n"
 for i in ${SVC[@]}; do
-    SVC_STATUS+="$i: $(systemctl is-active $i)\n $(systemctl status -n 5 --no-pager $i) \n\n\n\n"
+    SVC_STATUS+="$i: $(systemctl is-active $i)\n $(systemctl status -n 5 --no-pager $i) \n\n\n--------------------------------------------------------------\n\n\n"
 done
 
 
@@ -56,13 +56,13 @@ printf "\n CPU Usage: $CPU_USE %%"
 printf "\n Memory Usage: $MEM_USE %%"
 printf "\n Average Response Time: $AVG_RESPONSE_TIME ms"
 printf "\n------------------------------------------------------------------------------------------------------------\n"
-printf "\n \n Active Users:"
+printf "\nActive Users:\n"
 printf "$ACTIVE_USER"
-printf "\n------------------------------------------------------------------------------------------------------------\n"
+printf "\n-------------------------------------------------------------\n"
 printf "\n \n"
 echo -e "Service Status:\n$SVC_STATUS"
 
-printf $CPU_USE
+printf "$CPU_USE"
 
 
 
