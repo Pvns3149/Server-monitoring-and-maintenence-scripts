@@ -52,8 +52,8 @@ MEM_LIMIT=90
 TEMP_LIMIT=90
 FAN_LIMIT=1000
 
-
-mkdir -p "/home/Documents/Monitoring_logs"
+#ensure log directory exists
+mkdir -p "Monitoring_logs"
 
 #Display the results
 {
@@ -104,7 +104,7 @@ mkdir -p "/home/Documents/Monitoring_logs"
         done <<< "$CPU_FAN"
         
     fi
-} | tee -a "/home/Documents/Monitoring_logs/$(date +'%Y%m%d_%H%M')_monitor.log"
+} | tee -a "Monitoring_logs/$(date +'%Y%m%d_%H%M')_monitor.log"
  
   
 
