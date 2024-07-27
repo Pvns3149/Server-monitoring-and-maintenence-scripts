@@ -36,7 +36,7 @@ if [[ "$CHOICE" == "y" || "$CHOICE" == "Y" ]]; then
         sudo tee $LOGROTATE_CONF > /dev/null <<EOL
 
         #file can be updated to include configurations to rotate logs for other services in the same format
-        "/var/log/Monitoring/*.log" {
+        "/home/Puvan/Documents/Monitoring/*.log" {
             daily
             rotate 1
             compress
