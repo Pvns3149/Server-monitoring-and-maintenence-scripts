@@ -38,7 +38,7 @@ fi
 TIMESTAMP=$(date)
 
 #Get CPU usage in percentage
-CPU_USE=$(mpstat 2 1| awk '$12 ~ /[0-9.]+/ { print 100 - $12}')
+CPU_USE=$(mpstat 2 1| awk '$12 ~ /[0-9.]+/ { print (100 - $12)}')
 
 #Get memory usage in percentage
 MEM_USE=$(free | awk 'FNR == 2 {print $3/$2 * 100}')
@@ -53,9 +53,9 @@ ACTIVE_USER=$(who)
 
 #Checks services satus
 SVC=("named" "httpd" "postfix" "dovecot" "smb" "sshd" "mariadb" "firewalld") \
-SVC_STATUS="\n------------------------------------\n"
+SVC_STATUS="\n------------------------------------------------------------------------------------------------------------\n"
 for i in ${SVC[@]}; do
-    SVC_STATUS+="$i: $(systemctl is-active $i)\n $(systemctl status -n 5 --no-pager $i) \n\n"
+    SVC_STATUS+="$i: $(systemctl is-active $i)\n $(systemctl status -n 5 --no-pager $i) \n\n\n\n"
 done
 
 
@@ -68,12 +68,16 @@ FAN_LIMIT=1000
 
 
 #Display the results
-echo "Timestamp: $TIMESTAMP"
-echo "CPU Usage: $CPU_USE%"
-echo "Memory Usage: $MEM_USE%"
-echo "Average Response Time: $AVG_RESPONSE_TIME ms"
-echo "\n\nActive Users:"
+
+echo "\n \n \n Timestamp: $TIMESTAMP"
+echo "\n CPU Usage: $CPU_USE%"
+echo "\n Memory Usage: $MEM_USE%"
+echo "\n Average Response Time: $AVG_RESPONSE_TIME ms"
+echo "\n------------------------------------------------------------------------------------------------------------\n"
+echo "\n \n Active Users:"
 echo "$ACTIVE_USER"
+echo "\n------------------------------------------------------------------------------------------------------------\n"
+echo "\n \n"
 echo -e "Service Status:\n$SVC_STATUS"
 
 
@@ -81,11 +85,11 @@ echo -e "Service Status:\n$SVC_STATUS"
 
 
 #Check for errant values and report
-if (( $(echo "$CPU_USE > $CPU_LIMIT" | bc -l) )); then
+if ( $(echo "$CPU_USE > $CPU_LIMIT" | bc -l) ); then
     echo "Warning: high CPU usage!"
 fi
 
-if (( $(echo "$MEM_USE > $MEM_LIMIT" | bc -l) )); then
+if ( $(echo "$MEM_USE > $MEM_LIMIT" | bc -l) ); then
     echo "Warning: high memory usage!"
 fi
 
