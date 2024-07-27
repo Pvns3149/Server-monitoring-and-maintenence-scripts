@@ -117,7 +117,6 @@ done
 
 
 
-
 # Check system uptime
 printf "\n\nSystem uptime: "
 uptime
