@@ -75,15 +75,19 @@ if [[ "$CHOICE" == "y" || "$CHOICE" == "Y" ]]; then
     # Directories to backup
     DIRS_TO_BACKUP="/var/log"
 
-    # Backup destination
-    BACKUP_DEST="/backup"
+ # Backup destination
+    BACKUP_DEST="/backup/sysback"
 
-    # Create backup directory if it doesn't exist
+   # Create backup directory if it doesn't exist
     mkdir -p $BACKUP_DEST
+    
+   
+
+ 
 
     # Create timestamp and backup file
     TIMESTAMP=$(date +"%Y%m%d%_H%M%S")
-    BACKUP_FILE="$BACKUP_DEST/$TIMESTAMP.tar.gz"
+    BACKUP_FILE="$BACKUP_DEST/backup_$TIMESTAMP.tar.gz"
 
     # Create the backup
     tar -czvf $BACKUP_FILE $DIRS_TO_BACKUP

@@ -52,7 +52,7 @@ MEM_LIMIT=90
 TEMP_LIMIT=90
 FAN_LIMIT=1000
 
-#ensure log directory exists
+#ensure log directory exists and set filename
 mkdir -p "Monitoring"
 
 #Display the results and save to log file
@@ -104,3 +104,4 @@ mkdir -p "Monitoring"
         
     fi
 } | tee -a "Monitoring/$(date +'%Y%m%d_%H%M')_monitor.log"
+sudo chown root:root Monitoring/*.log
