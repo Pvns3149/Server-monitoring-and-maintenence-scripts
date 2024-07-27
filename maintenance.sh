@@ -4,11 +4,33 @@
 #configure log rotate files at /etc/logrotate.d/logrotate.conf after first run
 #configure logs to rotate at line 64
 
+# Function to rotate logfiles
 rotate_logs(){
     # Rotate files
     echo "Rotating log files..."
     sudo logrotate -f /etc/logrotate.d/logrotate.conf
     echo "Log files rotated successfully."
+}
+
+# Function to create logrotate configuration file
+logrotate_conf(){
+    # Create logrotate config file
+    LOGROTATE_CONF="/etc/logrotate.d/logrotate.conf"
+    echo "Creating logrotate configuration file at $LOGROTATE_CONF..."
+    sudo tee $LOGROTATE_CONF > /dev/null <<EOL
+
+    #file can be updated to include configurations to rotate logs for other services in the same format
+    "/home/Puvan/Documents/Monitoring/*.log" {
+        daily
+        rotate 1
+        compress
+        missingok
+        notifempty
+        create 0640 root root
+        postrotate
+        endscript
+    }
+EOL
 }
 
 # Ensure package exists for log rotation
@@ -36,24 +58,8 @@ if [[ "$CHOICE" == "y" || "$CHOICE" == "Y" ]]; then
     
     
     else
-
         # Create logrotate config file
-        LOGROTATE_CONF="/etc/logrotate.d/logrotate.conf"
-        echo "Creating logrotate configuration file at $LOGROTATE_CONF..."
-        sudo tee $LOGROTATE_CONF > /dev/null <<EOL
-
-        #file can be updated to include configurations to rotate logs for other services in the same format
-        "/home/Puvan/Documents/Monitoring/*.log" {
-            daily
-            rotate 1
-            compress
-            missingok
-            notifempty
-            create 0640 root root
-            postrotate
-            endscript
-        }
-EOL 
+        logrotate_conf
         rotate_logs
     fi
 
