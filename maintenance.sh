@@ -4,6 +4,13 @@
 #configure log rotate files at /etc/logrotate.d/logrotate.conf after first run
 #configure logs to rotate at line 64
 
+rotate_logs(){
+    # Rotate files
+    echo "Rotating log files..."
+    sudo logrotate -f /etc/logrotate.d/logrotate.conf
+    sudo logrotate -f /etc/logrotate.d/httpd
+}
+
 # Ensure package exists for log rotation
 sudo dnf -y install logrotate
 
@@ -25,7 +32,7 @@ if [[ "$CHOICE" == "y" || "$CHOICE" == "Y" ]]; then
     LOGROTATE_CONF="/etc/logrotate.d/logrotate.conf"
     if [ -f "$LOGROTATE_CONF" ]; then
         echo "Logrotate configuration file already exists at $LOGROTATE_CONF."
-    
+        rotate_logs
     
     
     else
@@ -57,23 +64,21 @@ if [[ "$CHOICE" == "y" || "$CHOICE" == "Y" ]]; then
                 systemctl reload httpd
             endscript
         }
-EOL
-    
-
-
-    # Rotate files
-    echo "Rotating log files..."
-    sudo logrotate -f /etc/logrotate.d/logrotate.conf
-    sudo logrotate -f /etc/logrotate.d/httpd
+EOL 
+        rotate_logs
     fi
+
+
+    
+    
 fi
 
 #Check if user wants to backup system
-read -p "Do you want to backup the system? (y/n): " CHOICE
+read -p "Do you want to backup the system? (y/n) (Must have executed the file as root): " CHOICE
 if [[ "$CHOICE" == "y" || "$CHOICE" == "Y" ]]; then
     #Backup files
     # Directories to backup
-    DIRS_TO_BACKUP="/etc /home /var/log"
+    DIRS_TO_BACKUP="/var/log"
 
     # Backup destination
     BACKUP_DEST="/backup"
@@ -94,13 +99,13 @@ fi
 #Optionally reboot services
 while true; do
     #ask user for target system or exit
-    read -p "Do you want to check specific service uptime? If yes, enter service name. Else enter n " SRV_NAME
+    read -p "Do you want to check specific service uptime? If yes, enter service name. Else enter n :" SRV_NAME
     if [[ "$SRV_NAME" == "n" || "$SRV_NAME" == "N" ]]; then
         echo "Continuing with system maintenance..."
         break
     else
         #display service uptime 
-        echo "Checking uptime for $SRV_NAME..."
+        echo "Checking last restarted timestamp for $SRV_NAME..."
         systemctl show "$SRV_NAME" --property=ActiveEnterTimestamp
 
         #ask if user wants to reboot the service
