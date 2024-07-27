@@ -54,52 +54,55 @@ FAN_LIMIT=1000
 
 
 #Display the results
-
-printf "\n \n \n Timestamp: $TIMESTAMP"
-printf "\n CPU Usage: $CPU_USE %%"
-printf "\n Memory Usage: $MEM_USE %%"
-printf "\n Average Response Time: $AVG_RESPONSE_TIME ms"
-printf "\n-------------------------------------------------------------\n"
-printf "\nActive Users:\n"
-printf "$ACTIVE_USER"
-printf "\n-------------------------------------------------------------\n"
-printf "\n \n"
-echo -e "Service Status:\n$SVC_STATUS"
-
-
+{
+    printf "\n \n \n Timestamp: $TIMESTAMP"
+    printf "\n CPU Usage: $CPU_USE %%"
+    printf "\n Memory Usage: $MEM_USE %%"
+    printf "\n Average Response Time: $AVG_RESPONSE_TIME ms"
+    printf "\n-------------------------------------------------------------\n"
+    printf "\nActive Users:\n"
+    printf "$ACTIVE_USER"
+    printf "\n-------------------------------------------------------------\n"
+    printf "\n \n"
+    echo -e "Service Status:\n$SVC_STATUS"
 
 
 
-#Check for errant values and report
-if (( $(echo "$CPU_USE > $CPU_LIMIT" | bc -l) )); then
-    echo "Warning: high CPU usage!"
-fi
-
-if (( $(echo "$MEM_USE > $MEM_LIMIT" | bc -l) )); then
-    echo "Warning: memory almost full!"
-fi
 
 
-if [ "$SENSORS_DETECTED" = true ]; then
-    #Check CPU temperature and fan if sensors are detected
-    echo "12"
-    CPU_TEMP=$(sensors| grep "Core")
-    CPU_FAN=$(sensors| grep "faen")
-    printf "\nCPU Temperature: $CPU_TEMP"
-    printf "\nCPU Fan Speeds:"
-    echo "$CPU_FAN"
-    if (( $(echo "$CPU_TEMP > $TEMP_LIMIT" | bc -l) )); then
-        echo "Warning: high CPU temp!"
+    #Check for errant values and report
+    if (( $(echo "$CPU_USE > $CPU_LIMIT" | bc -l) )); then
+        echo "Warning: high CPU usage!"
     fi
-    while IFS= read -r line; do
-        FAN_SPD=$(echo $line | awk '{print $2}')
-        if (( $(echo "$FAN_SPD > $FAN_LIMIT" | bc -l) )); then
-            echo "Warning: fan speed low ($line)"
-        fi
-    done <<< "$CPU_FAN"
-    
-fi
 
+    if (( $(echo "$MEM_USE > $MEM_LIMIT" | bc -l) )); then
+        echo "Warning: memory almost full!"
+    fi
+
+    #kept seperate since VMs may not have sensors
+
+    if [ "$SENSORS_DETECTED" = true ]; then
+        #Check CPU temperature and fan if sensors are detected
+        CPU_TEMP=$(sensors| grep "Core")
+        CPU_FAN=$(sensors| grep "fan")
+
+        printf "\nCPU Temperature: $CPU_TEMP"
+        printf "\nCPU Fan Speeds:"
+        echo "$CPU_FAN"
+
+        #test safety conditions
+        if (( $(echo "$CPU_TEMP > $TEMP_LIMIT" | bc -l) )); then
+            echo "Warning: high CPU temp!"
+        fi
+        while IFS= read -r line; do
+            FAN_SPD=$(echo $line | awk '{print $2}')
+            if (( $(echo "$FAN_SPD > $FAN_LIMIT" | bc -l) )); then
+                echo "Warning: fan speed low ($line)"
+            fi
+        done <<< "$CPU_FAN"
+        
+    fi
+} | tee -a "$(date +'%Y%m%d_%H%M')_monitor.log"
  
 #   # Optionally, log the results to a file
 #   # echo "$TIMESTAMP CPU: $CPU_USAGE, $MEM_USAGE, $DISK_USAGE" >> /path/to/logfile.log
