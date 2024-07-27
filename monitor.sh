@@ -26,13 +26,13 @@ fi
 
 
 #Configure sensor
-sudo sensors-detect --auto
+# sudo sensors-detect --auto
 
-if sensors | grep -q "Adapter"; then
-    SENSORS_DETECTED=true
-else
-    SENSORS_DETECTED=false
-fi
+# if sensors | grep -q "Adapter"; then
+#     SENSORS_DETECTED=true
+# else
+#     SENSORS_DETECTED=false
+# fi
 
 #Get current timestamp
 TIMESTAMP=$(date)
@@ -44,17 +44,9 @@ CPU_USE=$(mpstat 2 1| awk '$12 ~ /[0-9.]+/ { print 100 - $12}')
 MEM_USE=$(free | awk 'FNR == 2 {print $3/$2 * 100}')
 
 #Check average response time
-TOTAL_TIME=0
-
-for i in $(seq 1 5); do
-    START_TIME=$(date +%s%N)
-    speedtest-cli --simple &> /dev/null
-    END_TIME=$(date +%s%N)
-    RESPONSE_TIME=$((END_TIME - START_TIME))
-    TOTAL_TIME=$((TOTAL_TIME + RESPONSE_TIME))
-done
-
-AVG_RESPONSE_TIME=$((TOTAL_TIME / 5/10000000))
+PING_HOST="www.google.com"
+PING_COUNT=5
+AVG_RESPONSE_TIME=$(ping -c $PING_COUNT $PING_HOST | tail -1 | awk -F '/' '{print $5}')
 
 #Get list of current users
 ACTIVE_USER=$(who)
@@ -97,24 +89,24 @@ if (( $(echo "$MEM_USE > $MEM_LIMIT" | bc -l) )); then
     echo "Warning: high memory usage!"
 fi
 
-if (SENSORS_DETECTED); then
-    #Check CPU temperature and fan if sensors are detected
-    CPU_TEMP=$(sensors| grep "Core")
-    CPU_FAN=$(sensors| grep "fan")
-    echo "\nCPU Temperature: $CPU_TEMP"
-    echo "\nCPU Fan Speeds:"
-    echo "$CPU_FAN"
-    if (( $(echo "$CPU_TEMP > $TEMP_LIMIT" | bc -l) )); then
-        echo "Warning: high CPU temp!"
-    fi
-    while IFS= read -r line; do
-        FAN_SPD=$(echo $line | awk '{print $2}')
-        if (( FAN_SPD < FAN_LIMIT )); then
-            echo "Warning: fan speed low ($line)"
-        fi
-    done <<< "$CPU_FAN"
+# if (SENSORS_DETECTED); then
+#     #Check CPU temperature and fan if sensors are detected
+#     CPU_TEMP=$(sensors| grep "Core")
+#     CPU_FAN=$(sensors| grep "fan")
+#     echo "\nCPU Temperature: $CPU_TEMP"
+#     echo "\nCPU Fan Speeds:"
+#     echo "$CPU_FAN"
+#     if (( $(echo "$CPU_TEMP > $TEMP_LIMIT" | bc -l) )); then
+#         echo "Warning: high CPU temp!"
+#     fi
+#     while IFS= read -r line; do
+#         FAN_SPD=$(echo $line | awk '{print $2}')
+#         if (( FAN_SPD < FAN_LIMIT )); then
+#             echo "Warning: fan speed low ($line)"
+#         fi
+#     done <<< "$CPU_FAN"
     
-fi
+# fi
 
 
 
