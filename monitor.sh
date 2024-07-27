@@ -8,13 +8,13 @@ sudo systemctl start sysstat
 
 
 #Configure sensor
-# sudo sensors-detect --auto
+yes | sudo sensors-detect --auto
 
-# if sensors | grep -q "Adapter"; then
-#     SENSORS_DETECTED=true
-# else
-#     SENSORS_DETECTED=false
-# fi
+if sensors | grep -q "Adapter"; then
+    SENSORS_DETECTED=true
+else
+    SENSORS_DETECTED=false
+fi
 
 #Get current timestamp
 TIMESTAMP=$(date)
