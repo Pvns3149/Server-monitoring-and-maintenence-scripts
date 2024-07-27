@@ -8,7 +8,7 @@ rotate_logs(){
     # Rotate files
     echo "Rotating log files..."
     sudo logrotate -f /etc/logrotate.d/logrotate.conf
-    sudo logrotate -f /etc/logrotate.d/httpd
+    echo "Log files rotated successfully."
 }
 
 # Ensure package exists for log rotation
@@ -51,17 +51,6 @@ if [[ "$CHOICE" == "y" || "$CHOICE" == "Y" ]]; then
             notifempty
             create 0640 root root
             postrotate
-            endscript
-        }
-        "/var/log/httpd/*.log" {
-            daily
-            rotate 1
-            compress
-            missingok
-            notifempty
-            create 0640 root root
-            postrotate
-                systemctl reload httpd
             endscript
         }
 EOL 
