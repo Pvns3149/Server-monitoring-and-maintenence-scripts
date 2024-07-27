@@ -80,6 +80,7 @@ fi
 
 if [ "$SENSORS_DETECTED" = true ]; then
     #Check CPU temperature and fan if sensors are detected
+    echo "12"
     CPU_TEMP=$(sensors| grep "Core")
     CPU_FAN=$(sensors| grep "fan")
     printf "\nCPU Temperature: $CPU_TEMP"
