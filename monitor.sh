@@ -46,10 +46,10 @@ done
 
 
 #Set warning thresholds
-CPU_LIMIT= 90
-MEM_LIMIT= 90
-TEMP_LIMIT= 90
-FAN_LIMIT= 1000
+CPU_LIMIT=90
+MEM_LIMIT=90
+TEMP_LIMIT=90
+FAN_LIMIT=1000
 
 
 #Display the results
@@ -70,11 +70,11 @@ echo -e "Service Status:\n$SVC_STATUS"
 
 
 #Check for errant values and report
-if [ "$CPU_USE" -gt "$CPU_LIMIT" ]; then
+if (( $(echo "$CPU_USE > $CPU_LIMIT" | bc -l) )); then
     echo "Warning: high CPU usage!"
 fi
 
-if [$(echo "$CPU_USE > $CPU_LIMIT" | bc -l) -eq 1 ]; then
+if [$(echo "$MEM_USE > $MEM_LIMIT" | bc -l) -eq 1 ]; then
     echo "Warning: high memory usage!"
 fi
 
