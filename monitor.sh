@@ -58,7 +58,7 @@ printf "\n \n \n Timestamp: $TIMESTAMP"
 printf "\n CPU Usage: $CPU_USE %%"
 printf "\n Memory Usage: $MEM_USE %%"
 printf "\n Average Response Time: $AVG_RESPONSE_TIME ms"
-printf "\n------------------------------------------------------------------------------------------------------------\n"
+printf "\n-------------------------------------------------------------\n"
 printf "\nActive Users:\n"
 printf "$ACTIVE_USER"
 printf "\n-------------------------------------------------------------\n"
@@ -70,16 +70,16 @@ echo -e "Service Status:\n$SVC_STATUS"
 
 
 #Check for errant values and report
-if ( $(echo "$CPU_USE > $CPU_LIMIT" | bc -l) ); then
+if [$(echo "$CPU_USE > $CPU_LIMIT" | bc -l) -eq 1 ]; then
     echo "Warning: high CPU usage!"
 fi
 
-if ( $(echo "$MEM_USE > $MEM_LIMIT" | bc -l) ); then
+if [$(echo "$CPU_USE > $CPU_LIMIT" | bc -l) -eq 1 ]; then
     echo "Warning: high memory usage!"
 fi
 
 
-if (SENSORS_DETECTED); then
+if [ "$SENSORS_DETECTED" = true ]; then
     #Check CPU temperature and fan if sensors are detected
     CPU_TEMP=$(sensors| grep "Core")
     CPU_FAN=$(sensors| grep "fan")
