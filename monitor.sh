@@ -9,9 +9,11 @@ sudo systemctl start sysstat
 
 #Configure sensor
 yes | sudo sensors-detect --auto
-
 SENSORS_DETECTED=false
-if sensors | grep -q "Adapter"; then
+if sensors | grep -q "fan"; then
+    SENSORS_DETECTED=true
+fi
+if sensors | grep -q "Core"; then
     SENSORS_DETECTED=true
 fi
 
@@ -78,11 +80,11 @@ if (( $(echo "$MEM_USE > $MEM_LIMIT" | bc -l) )); then
 fi
 
 
-if [ "$SENSORS_DETECTED" == true ]; then
+if [ "$SENSORS_DETECTED" = true ]; then
     #Check CPU temperature and fan if sensors are detected
     echo "12"
     CPU_TEMP=$(sensors| grep "Core")
-    CPU_FAN=$(sensors| grep "fan")
+    CPU_FAN=$(sensors| grep "faen")
     printf "\nCPU Temperature: $CPU_TEMP"
     printf "\nCPU Fan Speeds:"
     echo "$CPU_FAN"
