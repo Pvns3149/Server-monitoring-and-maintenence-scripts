@@ -28,6 +28,12 @@ fi
 #Configure sensor
 sudo sensors-detect --auto
 
+if sensors | grep -q "Adapter"; then
+    SENSORS_DETECTED=true
+else
+    SENSORS_DETECTED=false
+fi
+
 #Get current timestamp
 TIMESTAMP=$(date)
 
@@ -60,23 +66,6 @@ for i in ${SVC[@]}; do
     SVC_STATUS+="$i: $(systemctl is-active $i)\n $(systemctl status -n 5 --no-pager $i) \n\n"
 done
 
-#Check CPU temperature
-CPU_TEMP=$(sensors| grep "Core")
-
-#Check fan
-CPU_FAN=$(sensors| grep "fan")
-
-#Display the results
-echo "Timestamp: $TIMESTAMP"
-echo "CPU Usage: $CPU_USE%"
-echo "Memory Usage: $MEM_USE%"
-echo "Average Response Time: $AVG_RESPONSE_TIME ms"
-echo "\nCPU Temperature: $CPU_TEMP"
-echo "\nCPU Fan Speeds:"
-echo "$CPU_FAN"
-echo "\n\nActive Users:"
-echo "$ACTIVE_USER"
-echo -e "Service Status:\n$SVC_STATUS"
 
 
 #Set warning thresholds
@@ -84,6 +73,20 @@ CPU_LIMIT=90
 MEM_LIMIT=90
 TEMP_LIMIT=90
 FAN_LIMIT=1000
+
+
+#Display the results
+echo "Timestamp: $TIMESTAMP"
+echo "CPU Usage: $CPU_USE%"
+echo "Memory Usage: $MEM_USE%"
+echo "Average Response Time: $AVG_RESPONSE_TIME ms"
+echo "\n\nActive Users:"
+echo "$ACTIVE_USER"
+echo -e "Service Status:\n$SVC_STATUS"
+
+
+
+
 
 #Check for errant values and report
 if (( $(echo "$CPU_USE > $CPU_LIMIT" | bc -l) )); then
@@ -94,17 +97,24 @@ if (( $(echo "$MEM_USE > $MEM_LIMIT" | bc -l) )); then
     echo "Warning: high memory usage!"
 fi
 
-if (( $(echo "$CPU_TEMP > $TEMP_LIMIT" | bc -l) )); then
-    echo "Warning: high CPU temp!"
-fi
-while IFS= read -r line; do
-    FAN_SPD=$(echo $line | awk '{print $2}')
-    if (( FAN_SPD < FAN_LIMIT )); then
-        echo "Warning: fan speed low ($line)"
+if (SENSORS_DETECTED); then
+    #Check CPU temperature and fan if sensors are detected
+    CPU_TEMP=$(sensors| grep "Core")
+    CPU_FAN=$(sensors| grep "fan")
+    echo "\nCPU Temperature: $CPU_TEMP"
+    echo "\nCPU Fan Speeds:"
+    echo "$CPU_FAN"
+    if (( $(echo "$CPU_TEMP > $TEMP_LIMIT" | bc -l) )); then
+        echo "Warning: high CPU temp!"
     fi
-done <<< "$CPU_FAN"
-
-
+    while IFS= read -r line; do
+        FAN_SPD=$(echo $line | awk '{print $2}')
+        if (( FAN_SPD < FAN_LIMIT )); then
+            echo "Warning: fan speed low ($line)"
+        fi
+    done <<< "$CPU_FAN"
+    
+fi
 
 
 
