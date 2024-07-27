@@ -71,7 +71,6 @@ mkdir -p "Monitoring"
 
 
 
-
     #Check for errant values and report
     if (( $(echo "$CPU_USE > $CPU_LIMIT" | bc -l) )); then
         echo "Warning: high CPU usage!"
