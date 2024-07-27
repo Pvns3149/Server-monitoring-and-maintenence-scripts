@@ -53,7 +53,7 @@ TEMP_LIMIT=90
 FAN_LIMIT=1000
 
 #ensure log directory exists
-mkdir -p "Monitoring_logs"
+mkdir -p "/var/log/Monitoring"
 
 #Display the results and save to log file
 {
@@ -104,4 +104,4 @@ mkdir -p "Monitoring_logs"
         done <<< "$CPU_FAN"
         
     fi
-} | tee -a "Monitoring_logs/$(date +'%Y%m%d_%H%M')_monitor.log"
+} | tee -a "/var/log/Monitoring/$(date +'%Y%m%d_%H%M')_monitor.log"
