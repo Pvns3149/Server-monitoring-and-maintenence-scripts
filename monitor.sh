@@ -52,15 +52,15 @@ FAN_LIMIT=1000
 #Display the results
 
 printf "\n \n \n Timestamp: $TIMESTAMP"
-printf "\n CPU Usage: $CPU_USE%"
-printf "\n Memory Usage: $MEM_USE%"
+printf "\n CPU Usage: $CPU_USE %%"
+printf "\n Memory Usage: $MEM_USE %%"
 printf "\n Average Response Time: $AVG_RESPONSE_TIME ms"
 printf "\n------------------------------------------------------------------------------------------------------------\n"
 printf "\n \n Active Users:"
 printf "$ACTIVE_USER"
 printf "\n------------------------------------------------------------------------------------------------------------\n"
 printf "\n \n"
-printf -e "Service Status:\n$SVC_STATUS"
+echo -e "Service Status:\n$SVC_STATUS"
 
 printf $CPU_USE
 
@@ -75,7 +75,7 @@ if ( $(echo "$MEM_USE > $MEM_LIMIT" | bc -l) ); then
     echo "Warning: high memory usage!"
 fi
 
-exit 0
+
 # if (SENSORS_DETECTED); then
 #     #Check CPU temperature and fan if sensors are detected
 #     CPU_TEMP=$(sensors| grep "Core")
