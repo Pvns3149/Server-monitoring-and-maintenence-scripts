@@ -8,7 +8,7 @@
 rotate_logs(){
     # Rotate files
     echo "Rotating log files..."
-    sudo logrotate -f /etc/logrotate.d/logrotate.conf
+    sudo logrotate -f /home/Puvan/Documents/Server-monitoring-and-maintenence-scripts/Monitoring/*.log
     echo "Log files rotated successfully."
 }
 
@@ -20,7 +20,7 @@ logrotate_conf(){
     sudo tee $LOGROTATE_CONF > /dev/null <<EOL
 
     #file can be updated to include configurations to rotate logs for other services in the same format
-    "/home/Puvan/Documents/Monitoring/*.log" {
+    "/home/Puvan/Documents/Server-monitoring-and-maintenence-scripts/Monitoring/*.log" {
         daily
         rotate 1
         compress
@@ -83,7 +83,7 @@ if [[ "$CHOICE" == "y" || "$CHOICE" == "Y" ]]; then
 
     # Create timestamp and backup file
     TIMESTAMP=$(date +"%Y%m%d%_H%M%S")
-    BACKUP_FILE="$BACKUP_DEST/backup_$TIMESTAMP.tar.gz"
+    BACKUP_FILE="$BACKUP_DEST/$TIMESTAMP.tar.gz"
 
     # Create the backup
     tar -czvf $BACKUP_FILE $DIRS_TO_BACKUP
