@@ -91,7 +91,7 @@ if [ "$SENSORS_DETECTED" = true ]; then
     fi
     while IFS= read -r line; do
         FAN_SPD=$(echo $line | awk '{print $2}')
-        if (( FAN_SPD < FAN_LIMIT )); then
+        if (( $(echo "$FAN_SPD > $FAN_LIMIT" | bc -l) )); then
             echo "Warning: fan speed low ($line)"
         fi
     done <<< "$CPU_FAN"
