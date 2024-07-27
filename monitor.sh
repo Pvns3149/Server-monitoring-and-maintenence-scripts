@@ -70,7 +70,7 @@ echo -e "Service Status:\n$SVC_STATUS"
 
 
 #Check for errant values and report
-if [$(echo "$CPU_USE > $CPU_LIMIT" | bc -l) -eq 1 ]; then
+if [$CPU_USE -gt $CPU_LIMIT]; then
     echo "Warning: high CPU usage!"
 fi
 
@@ -83,8 +83,8 @@ if [ "$SENSORS_DETECTED" = true ]; then
     #Check CPU temperature and fan if sensors are detected
     CPU_TEMP=$(sensors| grep "Core")
     CPU_FAN=$(sensors| grep "fan")
-    echo "\nCPU Temperature: $CPU_TEMP"
-    echo "\nCPU Fan Speeds:"
+    printf "\nCPU Temperature: $CPU_TEMP"
+    printf "\nCPU Fan Speeds:"
     echo "$CPU_FAN"
     if (( $(echo "$CPU_TEMP > $TEMP_LIMIT" | bc -l) )); then
         echo "Warning: high CPU temp!"
