@@ -78,7 +78,7 @@ if (( $(echo "$MEM_USE > $MEM_LIMIT" | bc -l) )); then
 fi
 
 
-if [ "$SENSORS_DETECTED" = true ]; then
+if [ "$SENSORS_DETECTED" == true ]; then
     #Check CPU temperature and fan if sensors are detected
     echo "12"
     CPU_TEMP=$(sensors| grep "Core")
