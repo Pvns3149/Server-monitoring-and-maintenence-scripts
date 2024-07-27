@@ -10,10 +10,9 @@ sudo systemctl start sysstat
 #Configure sensor
 yes | sudo sensors-detect --auto
 
+SENSORS_DETECTED=false
 if sensors | grep -q "Adapter"; then
     SENSORS_DETECTED=true
-else
-    SENSORS_DETECTED=false
 fi
 
 #Get current timestamp
@@ -74,8 +73,8 @@ if (( $(echo "$CPU_USE > $CPU_LIMIT" | bc -l) )); then
     echo "Warning: high CPU usage!"
 fi
 
-if [$(echo "$MEM_USE > $MEM_LIMIT" | bc -l) -eq 1 ]; then
-    echo "Warning: high memory usage!"
+if (( $(echo "$MEM_USE > $MEM_LIMIT" | bc -l) )); then
+    echo "Warning: memory almost full!"
 fi
 
 
