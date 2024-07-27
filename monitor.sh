@@ -38,7 +38,7 @@ AVG_RESPONSE_TIME=$(ping -c $PING_COUNT $PING_HOST | tail -1 | awk -F '/' '{prin
 ACTIVE_USER=$(who)
 
 #Checks services satus
-read -p "Enter service names separated by spaces: " -a SVC
+read -p "Enter individual service names you would like to check separated by spaces: " -a SVC
 SVC_STATUS="\n--------------------------------------------------------------\n"
 for i in ${SVC[@]}; do
     SVC_STATUS+="$i: $(systemctl is-active $i)\n $(systemctl status -n 5 --no-pager $i) \n\n\n--------------------------------------------------------------\n\n\n"
@@ -52,6 +52,8 @@ MEM_LIMIT=90
 TEMP_LIMIT=90
 FAN_LIMIT=1000
 
+
+mkdir -p "/home/Documents/Monitoring_logs"
 
 #Display the results
 {
@@ -102,10 +104,8 @@ FAN_LIMIT=1000
         done <<< "$CPU_FAN"
         
     fi
-} | tee -a "$(date +'%Y%m%d_%H%M')_monitor.log"
+} | tee -a "/home/Documents/Monitoring_logs/$(date +'%Y%m%d_%H%M')_monitor.log"
  
-#   # Optionally, log the results to a file
-#   # echo "$TIMESTAMP CPU: $CPU_USAGE, $MEM_USAGE, $DISK_USAGE" >> /path/to/logfile.log
   
 
 
