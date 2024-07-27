@@ -37,7 +37,7 @@ AVG_RESPONSE_TIME=$(ping -c $PING_COUNT $PING_HOST | tail -1 | awk -F '/' '{prin
 ACTIVE_USER=$(who)
 
 #Checks services satus
-SVC=("named" "httpd" "postfix" "dovecot" "smb" "sshd" "mariadb" "firewalld") \
+read -p "Enter service names separated by spaces: " -a SVC
 SVC_STATUS="\n--------------------------------------------------------------\n"
 for i in ${SVC[@]}; do
     SVC_STATUS+="$i: $(systemctl is-active $i)\n $(systemctl status -n 5 --no-pager $i) \n\n\n--------------------------------------------------------------\n\n\n"
