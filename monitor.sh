@@ -37,7 +37,7 @@ AVG_RESPONSE_TIME=$(ping -c $PING_COUNT $PING_HOST | tail -1 | awk -F '/' '{prin
 #Get list of current users
 ACTIVE_USER=$(who)
 
-#Checks services satus
+#Checks services status based on user input
 read -p "Enter individual service names you would like to check separated by spaces: " -a SVC
 SVC_STATUS="\n--------------------------------------------------------------\n"
 for i in ${SVC[@]}; do
@@ -55,7 +55,7 @@ FAN_LIMIT=1000
 #ensure log directory exists
 mkdir -p "Monitoring_logs"
 
-#Display the results
+#Display the results and save to log file
 {
     printf "\n \n \n Timestamp: $TIMESTAMP"
     printf "\n CPU Usage: $CPU_USE %%"
@@ -105,7 +105,3 @@ mkdir -p "Monitoring_logs"
         
     fi
 } | tee -a "Monitoring_logs/$(date +'%Y%m%d_%H%M')_monitor.log"
- 
-  
-
-
