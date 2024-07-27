@@ -19,8 +19,11 @@ sudo systemctl start sysstat
 #Get current timestamp
 TIMESTAMP=$(date)
 
-#Get CPU usage in percentage
-CPU_USE=$(mpstat 2 1| awk '$12 ~ /[0-9.]+/ { print (100 - $12)}')
+#Get CPU idleness in percentage
+CPU_OUT=$(mpstat 2 1| awk '$12 ~ /[0-9.]+/ { print (100 - $12)}')
+# Extract the second number (CPU percentage)
+CPU_USE=$(echo $CPU_OUT | awk '{print $2}')
+
 
 #Get memory usage in percentage
 MEM_USE=$(free | awk 'FNR == 2 {print $3/$2 * 100}')
@@ -62,7 +65,7 @@ printf "\n-------------------------------------------------------------\n"
 printf "\n \n"
 echo -e "Service Status:\n$SVC_STATUS"
 
-printf "$CPU_USE"
+
 
 
 
@@ -76,47 +79,26 @@ if ( $(echo "$MEM_USE > $MEM_LIMIT" | bc -l) ); then
 fi
 
 
-# if (SENSORS_DETECTED); then
-#     #Check CPU temperature and fan if sensors are detected
-#     CPU_TEMP=$(sensors| grep "Core")
-#     CPU_FAN=$(sensors| grep "fan")
-#     echo "\nCPU Temperature: $CPU_TEMP"
-#     echo "\nCPU Fan Speeds:"
-#     echo "$CPU_FAN"
-#     if (( $(echo "$CPU_TEMP > $TEMP_LIMIT" | bc -l) )); then
-#         echo "Warning: high CPU temp!"
-#     fi
-#     while IFS= read -r line; do
-#         FAN_SPD=$(echo $line | awk '{print $2}')
-#         if (( FAN_SPD < FAN_LIMIT )); then
-#             echo "Warning: fan speed low ($line)"
-#         fi
-#     done <<< "$CPU_FAN"
+if (SENSORS_DETECTED); then
+    #Check CPU temperature and fan if sensors are detected
+    CPU_TEMP=$(sensors| grep "Core")
+    CPU_FAN=$(sensors| grep "fan")
+    echo "\nCPU Temperature: $CPU_TEMP"
+    echo "\nCPU Fan Speeds:"
+    echo "$CPU_FAN"
+    if (( $(echo "$CPU_TEMP > $TEMP_LIMIT" | bc -l) )); then
+        echo "Warning: high CPU temp!"
+    fi
+    while IFS= read -r line; do
+        FAN_SPD=$(echo $line | awk '{print $2}')
+        if (( FAN_SPD < FAN_LIMIT )); then
+            echo "Warning: fan speed low ($line)"
+        fi
+    done <<< "$CPU_FAN"
     
-# fi
+fi
 
-
-
-
-# Get current timestamp
-#   TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
-  
-#   # Get CPU usage
-#   CPU_USAGE=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1"%"}')
-  
-#   # Get memory usage
-#   MEM_USAGE=$(free -m | awk 'NR==2{printf "Memory Usage: %s/%sMB (%.2f%%)\n", $3,$2,$3*100/$2 }')
-  
-#   # Get disk usage
-#   DISK_USAGE=$(df -h | awk '$NF=="/"{printf "Disk Usage: %d/%dGB (%s)\n", $3,$2,$5}')
-  
-#   # Print the results
-#   echo "$TIMESTAMP"
-#   echo "CPU Usage: $CPU_USAGE"
-#   echo "$MEM_USAGE"
-#   echo "$DISK_USAGE"
-#   echo "-----------------------------"
-  
+ 
 #   # Optionally, log the results to a file
 #   # echo "$TIMESTAMP CPU: $CPU_USAGE, $MEM_USAGE, $DISK_USAGE" >> /path/to/logfile.log
   
