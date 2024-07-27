@@ -1,28 +1,10 @@
 #!/bin/bash
 
-#Update existing packages
+#Update existing packages or install new packages
 sudo dnf update -y
-
-# Install packages if not already installed
-if ! command -v speedtest-cli &> /dev/null
-then
-    echo "speedtest-cli not found, installing..."
-    sudo dnf install -y speedtest-cli
-fi
-
-if ! command -v sysstat &> /dev/null
-then
-    echo "sysstat not found, installing..."
-    sudo dnf install -y sysstat
-    sudo systemctl enable sysstat
-    sudo systemctl start sysstat
-fi
-
-if ! command -v lm_sensors &> /dev/null
-then
-    echo "lm_sensors not found, installing..."
-    sudo dnf install -y lm_sensors
-fi
+sudo dnf install -y speedtest-cli sysstat lm_sensors
+sudo systemctl enable sysstat
+sudo systemctl start sysstat
 
 
 #Configure sensor
@@ -53,7 +35,7 @@ ACTIVE_USER=$(who)
 
 #Checks services satus
 SVC=("named" "httpd" "postfix" "dovecot" "smb" "sshd" "mariadb" "firewalld") \
-SVC_STATUS="\n------------------------------------------------------------------------------------------------------------\n"
+SVC_STATUS="\n--------------------------------------------------------------\n"
 for i in ${SVC[@]}; do
     SVC_STATUS+="$i: $(systemctl is-active $i)\n $(systemctl status -n 5 --no-pager $i) \n\n\n\n"
 done
@@ -69,18 +51,18 @@ FAN_LIMIT=1000
 
 #Display the results
 
-echo "\n \n \n Timestamp: $TIMESTAMP"
-echo "\n CPU Usage: $CPU_USE%"
-echo "\n Memory Usage: $MEM_USE%"
-echo "\n Average Response Time: $AVG_RESPONSE_TIME ms"
-echo "\n------------------------------------------------------------------------------------------------------------\n"
-echo "\n \n Active Users:"
-echo "$ACTIVE_USER"
-echo "\n------------------------------------------------------------------------------------------------------------\n"
-echo "\n \n"
-echo -e "Service Status:\n$SVC_STATUS"
+printf "\n \n \n Timestamp: $TIMESTAMP"
+printf "\n CPU Usage: $CPU_USE%"
+printf "\n Memory Usage: $MEM_USE%"
+printf "\n Average Response Time: $AVG_RESPONSE_TIME ms"
+printf "\n------------------------------------------------------------------------------------------------------------\n"
+printf "\n \n Active Users:"
+printf "$ACTIVE_USER"
+printf "\n------------------------------------------------------------------------------------------------------------\n"
+printf "\n \n"
+printf -e "Service Status:\n$SVC_STATUS"
 
-
+printf $CPU_USE
 
 
 
@@ -93,6 +75,7 @@ if ( $(echo "$MEM_USE > $MEM_LIMIT" | bc -l) ); then
     echo "Warning: high memory usage!"
 fi
 
+exit 0
 # if (SENSORS_DETECTED); then
 #     #Check CPU temperature and fan if sensors are detected
 #     CPU_TEMP=$(sensors| grep "Core")
