@@ -18,7 +18,7 @@ printf "Removing unused packages... \n\n\n"
 sudo dnf autoremove -y
 
 # Check if user wants to rotate logs ?
-read -p "Do you want to reboot the system? (y/n): " CHOICE
+read -p "Do you want to rotate logs? (y/n): " CHOICE
 if [[ "$CHOICE" == "y" || "$CHOICE" == "Y" ]]; then
 
     # Check if logrotate config file exists
@@ -63,13 +63,13 @@ EOL
 
     # Rotate files
     echo "Rotating log files..."
-    sudo logrotate -f /etc/logrotate.d/Monitoring
+    sudo logrotate -f /etc/logrotate.d/logrotate.conf
     sudo logrotate -f /etc/logrotate.d/httpd
     fi
 fi
 
 #Check if user wants to backup system
-read -p "Do you want to reboot the system? (y/n): " CHOICE
+read -p "Do you want to backup the system? (y/n): " CHOICE
 if [[ "$CHOICE" == "y" || "$CHOICE" == "Y" ]]; then
     #Backup files
     # Directories to backup
@@ -95,7 +95,7 @@ fi
 while true; do
     #ask user for target system or exit
     read -p "Do you want to check specific service uptime? If yes, enter service name. Else enter n " SRV_NAME
-    if [[ "$SRV_NAME" == "n" && "$SRV_NAME" == "N"]]; then
+    if [[ "$SRV_NAME" == "n" || "$SRV_NAME" == "N" ]]; then
         echo "Continuing with system maintenance..."
         break
     else
@@ -106,7 +106,7 @@ while true; do
         #ask if user wants to reboot the service
         read -p "Do you want to reboot the service? (y/n): " CHOICE
         if [[ "$CHOICE" == "y" || "$CHOICE" == "Y" ]]; then
-            echo "Rebooting the system..."
+            echo "Rebooting the service..."
             sudo systemctl restart "$SRV_NAME"
 
             #show current status of the service to ensure its running
