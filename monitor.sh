@@ -103,5 +103,5 @@ mkdir -p "Monitoring"
         done <<< "$CPU_FAN"
         
     fi
-} | tee -a "Monitoring/$(date +'%Y%m%d_%H%M')_monitor.log"
+} | tee -a "Monitoring/$(date +'%Y%m%d %H:%M:%S')_monitor.log"
 sudo chown root:root Monitoring/*.log
