@@ -21,12 +21,15 @@ logrotate_conf(){
 
     #file can be updated to include configurations to rotate logs for other services in the same format
     "/home/Puvan/Documents/Server-monitoring-and-maintenence-scripts/Monitoring/*.log" {
+        
         daily
-        rotate 1
-        compress
         missingok
+        rotate 7
+        compress
         notifempty
         create 0640 root root
+        dateext
+        dateformat -%Y%m%d_%s
         postrotate
         endscript
     }
