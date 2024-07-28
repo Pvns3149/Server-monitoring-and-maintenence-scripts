@@ -10,7 +10,7 @@ printf "\n-------------------------------------------------------------\n"
 sudo dnf -y install logrotate
 # Update all system packages
 printf "\n-------------------------------------------------------------\n\n"
-echo "Updating system packages...\n"
+printf "Updating system packages...\n\n"
 sudo dnf update -y
 
 
@@ -32,7 +32,8 @@ rotate_logs(){
 
 
 # Clean unused cahces and packages
-echo "Cleaning package cache..."
+printf "\n-------------------------------------------------------------\n\n"
+echo "Cleaning package cache...\n\n"
 sudo dnf clean all
 printf "\n-------------------------------------------------------------\n\n"
 printf "Removing unused packages... \n\n\n"
