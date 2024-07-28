@@ -5,8 +5,11 @@
 
 
 # Ensure package exists for log rotation
+printf "Installing necessary packages and updating packages\n"
+printf "-------------------------------------------------------------\n"
 sudo dnf -y install logrotate
 # Update all system packages
+printf "\n-------------------------------------------------------------\n\n"
 echo "Updating system packages..."
 sudo dnf update -y
 
@@ -31,14 +34,18 @@ rotate_logs(){
 # Clean unused cahces and packages
 echo "Cleaning package cache..."
 sudo dnf clean all
+printf "\n-------------------------------------------------------------\n\n"
 printf "Removing unused packages... \n\n\n"
 sudo dnf autoremove -y
+printf "\n-------------------------------------------------------------\n\n"
 
 # Check if user wants to rotate logs 
 read -p "Do you want to rotate logs? (y/n): " CHOICE
 if [[ "$CHOICE" == "y" || "$CHOICE" == "Y" ]]; then
      rotate_logs
 fi
+
+printf "\n-------------------------------------------------------------\n\n"
 
 #Check if user wants to backup system
 read -p "Do you want to backup the system? (y/n) (Must have executed the file as root): " CHOICE
@@ -74,19 +81,20 @@ fi
 #Optionally reboot services
 while true; do
     #ask user for target system or exit
+    printf "\n-------------------------------------------------------------\n\n"
     read -p "Do you want to check specific service uptime? If yes, enter service name. Else enter n :" SRV_NAME
     if [[ "$SRV_NAME" == "n" || "$SRV_NAME" == "N" ]]; then
-        echo "Continuing with system maintenance..."
+        printf "\nContinuing with system maintenance..."
         break
     else
         #display service uptime 
-        echo "Checking last restarted timestamp for $SRV_NAME..."
+        printf "Checking last restarted timestamp for $SRV_NAME...\n"
         systemctl show "$SRV_NAME" --property=ActiveEnterTimestamp
 
         #ask if user wants to reboot the service
         read -p "Do you want to reboot the service? (y/n): " CHOICE
         if [[ "$CHOICE" == "y" || "$CHOICE" == "Y" ]]; then
-            echo "Rebooting the service..."
+            printf "\nRebooting the service...\n"
             sudo systemctl restart "$SRV_NAME"
 
             #show current status of the service to ensure its running
