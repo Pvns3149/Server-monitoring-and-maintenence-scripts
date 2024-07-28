@@ -8,7 +8,7 @@
 
 
 #Update existing packages or install new packages
-printf "\n\nInstalling necessary packages and updating packages\n"
+printf "\n\nInstalling necessary packages and updating packages\n\n"
 sudo dnf update -y
 printf "\n-------------------------------------------------------------\n"
 sudo dnf install -y speedtest-cli sysstat lm_sensors

@@ -2,17 +2,27 @@
 
 # Configurations are as follows:
 # Further configure log rotate file settings at /etc/logrotate.conf
+# add files to backup on line 56 and customise backup destination on line 59
 
 
 # Ensure package exists for log rotation
 printf "\nInstalling necessary packages and updating packages"
 printf "\n-------------------------------------------------------------\n"
 sudo dnf -y install logrotate
+
 # Update all system packages
 printf "\n-------------------------------------------------------------\n\n"
 printf "Updating system packages...\n\n"
 sudo dnf update -y
 
+# Clean unused cahces and packages
+printf "\n-------------------------------------------------------------\n\n"
+printf "Cleaning package cache...\n\n"
+sudo dnf clean all
+printf "\n-------------------------------------------------------------\n\n"
+printf "Removing unused packages... \n\n\n"
+sudo dnf autoremove -y
+printf "\n-------------------------------------------------------------\n\n"
 
 
 # Function to rotate logfiles
@@ -29,16 +39,6 @@ rotate_logs(){
 
 }
 
-
-
-# Clean unused cahces and packages
-printf "\n-------------------------------------------------------------\n\n"
-echo "Cleaning package cache...\n\n"
-sudo dnf clean all
-printf "\n-------------------------------------------------------------\n\n"
-printf "Removing unused packages... \n\n\n"
-sudo dnf autoremove -y
-printf "\n-------------------------------------------------------------\n\n"
 
 # Check if user wants to rotate logs 
 read -p "Do you want to rotate logs? (y/n): " CHOICE
