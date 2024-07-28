@@ -1,44 +1,31 @@
 #!/bin/bash
 
-#configurations are as follows
-#configure log rotate files at /etc/logrotate.d/logrotate.conf after first run
-#configure logs to rotate at line 64
+# Configurations are as follows:
+# Further configure log rotate file settings at /etc/logrotate.conf
 
-# Function to rotate logfiles
-rotate_logs(){
-    # Rotate files
-    echo "Rotating log files..."
-    sudo logrotate -f /home/Puvan/Documents/Server-monitoring-and-maintenence-scripts/Monitoring/*.log
-    echo "Log files rotated successfully."
-}
-
-# Function to create logrotate configuration file
-logrotate_conf(){
-    # Create logrotate config file
-    LOGROTATE_CONF="/etc/logrotate.d/logrotate.conf"
-    echo "Creating logrotate configuration file at $LOGROTATE_CONF..."
-    sudo tee $LOGROTATE_CONF > /dev/null <<EOL
-"/home/Puvan/Documents/Server-monitoring-and-maintenence-scripts/Monitoring/*.log" {
-    daily
-    missingok
-    rotate 7
-    compress
-    notifempty
-    create 0640 root root
-    dateext
-    dateformat -%Y%m%d_%s
-    postrotate
-    endscript
-}
-EOL
-}
 
 # Ensure package exists for log rotation
 sudo dnf -y install logrotate
-
 # Update all system packages
 echo "Updating system packages..."
 sudo dnf update -y
+
+
+
+# Function to rotate logfiles
+rotate_logs(){
+
+    echo "Rotating log files..."
+    if logrotate /etc/logrotate.conf 2> /tmp/logrotate_error.log; then
+        echo "Log rotation completed."
+    else
+        echo "Log rotation failed."
+        echo "Error details:"
+        cat /tmp/logrotate_error.log
+    fi
+
+}
+
 
 # Clean unused cahces and packages
 echo "Cleaning package cache..."
@@ -46,26 +33,10 @@ sudo dnf clean all
 printf "Removing unused packages... \n\n\n"
 sudo dnf autoremove -y
 
-# Check if user wants to rotate logs ?
+# Check if user wants to rotate logs 
 read -p "Do you want to rotate logs? (y/n): " CHOICE
 if [[ "$CHOICE" == "y" || "$CHOICE" == "Y" ]]; then
-
-    # Check if logrotate config file exists
-    LOGROTATE_CONF="/etc/logrotate.d/logrotate.conf"
-    if [ -f "$LOGROTATE_CONF" ]; then
-        echo "Logrotate configuration file already exists at $LOGROTATE_CONF."
-        rotate_logs
-    
-    
-    else
-        # Create logrotate config file
-        logrotate_conf
-        rotate_logs
-    fi
-
-
-    
-    
+     rotate_logs
 fi
 
 #Check if user wants to backup system
@@ -90,8 +61,12 @@ if [[ "$CHOICE" == "y" || "$CHOICE" == "Y" ]]; then
     BACKUP_FILE="$BACKUP_DEST/backup_$TIMESTAMP.tar.gz"
 
     # Create the backup
-    tar -czvf $BACKUP_FILE $DIRS_TO_BACKUP
-    echo "Backup completed successfully. Backup file: $BACKUP_FILE"
+    if tar -czvf $BACKUP_FILE $DIRS_TO_BACKUP;then
+        echo "Backup completed successfully. Backup file: $BACKUP_FILE"
+    else
+        echo "Backup failed."
+    fi
+    
 fi
 
 

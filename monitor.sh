@@ -53,7 +53,8 @@ TEMP_LIMIT=90
 FAN_LIMIT=1000
 
 #ensure log directory exists and set filename
-mkdir -p "Monitoring"
+LOG_DIR="/var/log/Monitor_logs"
+mkdir -p "$LOG_DIR"
 
 #Display the results and save to log file
 {
@@ -103,5 +104,5 @@ mkdir -p "Monitoring"
         done <<< "$CPU_FAN"
         
     fi
-} | tee -a "Monitoring/$(date +'%Y%m%d %H:%M:%S')_monitor.log"
+} | tee -a "$LOG_DIR/$(date +'%Y%m%d %H:%M:%S')_monitor.log"
 sudo chown root:root Monitoring/*.log
