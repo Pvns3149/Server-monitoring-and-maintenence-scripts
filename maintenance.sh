@@ -27,6 +27,7 @@ rotate_logs(){
 }
 
 
+
 # Clean unused cahces and packages
 echo "Cleaning package cache..."
 sudo dnf clean all
