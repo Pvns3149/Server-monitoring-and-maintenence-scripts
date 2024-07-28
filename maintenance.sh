@@ -5,12 +5,12 @@
 
 
 # Ensure package exists for log rotation
-printf "Installing necessary packages and updating packages\n"
-printf "-------------------------------------------------------------\n"
+printf "\nInstalling necessary packages and updating packages"
+printf "\n-------------------------------------------------------------\n"
 sudo dnf -y install logrotate
 # Update all system packages
 printf "\n-------------------------------------------------------------\n\n"
-echo "Updating system packages..."
+echo "Updating system packages...\n"
 sudo dnf update -y
 
 
@@ -88,7 +88,7 @@ while true; do
         break
     else
         #display service uptime 
-        printf "Checking last restarted timestamp for $SRV_NAME...\n"
+        printf "\nChecking last restarted timestamp for $SRV_NAME...\n"
         systemctl show "$SRV_NAME" --property=ActiveEnterTimestamp
 
         #ask if user wants to reboot the service

@@ -8,7 +8,7 @@
 
 
 #Update existing packages or install new packages
-printf "Installing necessary packages and updating packages\n"
+printf "\n\nInstalling necessary packages and updating packages\n"
 sudo dnf update -y
 printf "\n-------------------------------------------------------------\n"
 sudo dnf install -y speedtest-cli sysstat lm_sensors
@@ -80,8 +80,8 @@ mkdir -p "$LOG_DIR"
     printf "\n \n \n Timestamp: $TIMESTAMP"
     printf "\n CPU Usage: $CPU_USE %%"
     printf "\n Memory Usage: $MEM_USE %%"
-    printf "\n-------------------------------------------------------------\n"
-    printf "\n Disk Space: $DSK_SPC"
+    printf "\n-------------------------------------------------------------\n\n"
+    echo -e " Disk Space: \n\n$DSK_SPC"
     printf "\n-------------------------------------------------------------\n"
     printf "\n Average Response Time: $AVG_RESPONSE_TIME ms"
     printf "\n-------------------------------------------------------------\n"
@@ -97,7 +97,8 @@ mkdir -p "$LOG_DIR"
         CPU_TEMP=$(sensors| grep "Core")
         CPU_FAN=$(sensors| grep "fan")
 
-        printf "\nCPU Temperature: $CPU_TEMP"
+        printf "\nCPU Temperature: "
+        echo "$CPU_TEMP"
         printf "\nCPU Fan Speeds:"
         echo "$CPU_FAN"
 
