@@ -18,21 +18,18 @@ logrotate_conf(){
     LOGROTATE_CONF="/etc/logrotate.d/logrotate.conf"
     echo "Creating logrotate configuration file at $LOGROTATE_CONF..."
     sudo tee $LOGROTATE_CONF > /dev/null <<EOL
-
-    #file can be updated to include configurations to rotate logs for other services in the same format
-    "/home/Puvan/Documents/Server-monitoring-and-maintenence-scripts/Monitoring/*.log" {
-        
-        daily
-        missingok
-        rotate 7
-        compress
-        notifempty
-        create 0640 root root
-        dateext
-        dateformat -%Y%m%d_%s
-        postrotate
-        endscript
-    }
+"/home/Puvan/Documents/Server-monitoring-and-maintenence-scripts/Monitoring/*.log" {
+    daily
+    missingok
+    rotate 7
+    compress
+    notifempty
+    create 0640 root root
+    dateext
+    dateformat -%Y%m%d_%s
+    postrotate
+    endscript
+}
 EOL
 }
 
