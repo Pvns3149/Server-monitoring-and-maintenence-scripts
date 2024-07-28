@@ -105,7 +105,6 @@ while true; do
 done
 
 
-
 # Check system uptime
 printf "\n\nSystem uptime: "
 uptime

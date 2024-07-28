@@ -11,7 +11,7 @@
 printf "\n\nInstalling necessary packages and updating packages\n\n"
 sudo dnf update -y
 printf "\n-------------------------------------------------------------\n"
-sudo dnf install -y speedtest-cli sysstat lm_sensors
+sudo dnf install -y sysstat lm_sensors
 printf "\n-------------------------------------------------------------\n"
 sudo systemctl enable sysstat
 sudo systemctl start sysstat
@@ -114,6 +114,7 @@ mkdir -p "$LOG_DIR"
         done <<< "$CPU_FAN"
         
     fi
+
 
 
     #Continue safety checks
